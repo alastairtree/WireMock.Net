@@ -55,6 +55,10 @@ namespace WireMock.Settings
         [PublicAPI]
         public string AdminPassword { get; set; }
 
+        /// <inheritdoc cref="IFluentMockServerSettings.AdminAccessControlAllowOriginHeader"/>
+        [PublicAPI]
+        public string AdminAccessControlAllowOriginHeader { get; set; } = "*";
+
         /// <inheritdoc cref="IFluentMockServerSettings.RequestLogExpirationDuration"/>
         [PublicAPI]
         public int? RequestLogExpirationDuration { get; set; }

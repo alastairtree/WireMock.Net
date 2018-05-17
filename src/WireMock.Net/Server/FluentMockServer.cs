@@ -216,7 +216,7 @@ namespace WireMock.Server
                     SetBasicAuthentication(settings.AdminUsername, settings.AdminPassword);
                 }
 
-                InitAdmin();
+                InitAdmin(settings);
             }
 
             if (settings.ReadStaticMappings == true)

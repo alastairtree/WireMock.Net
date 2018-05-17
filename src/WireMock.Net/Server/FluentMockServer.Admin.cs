@@ -46,8 +46,10 @@ namespace WireMock.Server
         };
 
         #region InitAdmin
-        private void InitAdmin()
+        private void InitAdmin(IFluentMockServerSettings settings)
         {
+            this._adminCorsHeader = settings.AdminAccessControlAllowOriginHeader;
+
             // __admin/settings
             Given(Request.Create().WithPath(AdminSettings).UsingGet()).RespondWith(new DynamicResponseProvider(SettingsGet));
             Given(Request.Create().WithPath(AdminSettings).UsingMethod("PUT", "POST").WithHeader(HttpKnownHeaderNames.ContentType, ContentTypeJson)).RespondWith(new DynamicResponseProvider(SettingsUpdate));
@@ -192,6 +194,7 @@ namespace WireMock.Server
 
         #region Proxy and Record
         private HttpClient _httpClientForProxy;
+        private string _adminCorsHeader;
 
         private void InitProxyAndRecord(IProxyAndRecordSettings settings)
         {
@@ -760,12 +763,23 @@ namespace WireMock.Server
 
         private ResponseMessage ToJson<T>(T result)
         {
-            return new ResponseMessage
+            var message = new ResponseMessage
             {
                 Body = JsonConvert.SerializeObject(result, _settings),
                 StatusCode = 200,
-                Headers = new Dictionary<string, WireMockList<string>> { { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") } }
+                Headers = new Dictionary<string, WireMockList<string>>
+                {
+                    { HttpKnownHeaderNames.ContentType, new WireMockList<string>("application/json") }
+                }
             };
+
+            if (!string.IsNullOrEmpty(_adminCorsHeader))
+            {
+                message.Headers.Add(HttpKnownHeaderNames.AccessControlAllowOrigin,
+                    new WireMockList<string>(_adminCorsHeader));
+            }
+
+            return message;
         }
 
         private Encoding ToEncoding(EncodingModel encodingModel)

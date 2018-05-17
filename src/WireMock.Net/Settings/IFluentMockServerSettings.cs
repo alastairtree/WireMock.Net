@@ -77,6 +77,12 @@ namespace WireMock.Settings
         string AdminPassword { get; set; }
 
         /// <summary>
+        /// The password needed for __admin access.
+        /// </summary>
+        [PublicAPI]
+        string AdminAccessControlAllowOriginHeader { get; set; }
+
+        /// <summary>
         /// The RequestLog expiration in hours (optional).
         /// </summary>
         [PublicAPI]
